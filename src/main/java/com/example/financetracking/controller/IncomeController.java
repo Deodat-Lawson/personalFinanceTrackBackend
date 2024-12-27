@@ -30,12 +30,23 @@ public class IncomeController {
 
   @GetMapping
   public List<Income> getAllIncome(){
-    return incomeService.getAllSpendings();
+    return incomeService.getAllIncomes();
   }
 
   @GetMapping("/total")
-  public double getTotalSpent(){
-    return incomeService.getTotalSpent();
+  public double getTotalIncome(){
+    return incomeService.getTotalIncome();
   }
+
+  @GetMapping("/month")
+  public double getMonthlyIncome(){
+    return incomeService.getCurrentMonthTotal();
+  }
+
+  @GetMapping("/prevMonth")
+  public double getPreviousMonthlyIncome(){
+    return incomeService.getPreviousMonthTotal();
+  }
+
 
 }

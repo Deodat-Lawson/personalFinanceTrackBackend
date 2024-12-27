@@ -19,11 +19,11 @@ public class IncomeService{
     return incomeRepository.save(income);
   }
 
-  public List<Income> getAllSpendings(){
+  public List<Income> getAllIncomes(){
     return incomeRepository.findAll();
   }
 
-  public double getTotalSpent(){
+  public double getTotalIncome(){
     return incomeRepository.findAll().stream().mapToDouble(Income::getAmount).sum();
   }
 

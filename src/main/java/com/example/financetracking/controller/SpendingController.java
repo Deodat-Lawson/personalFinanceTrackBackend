@@ -38,4 +38,14 @@ public class SpendingController {
     return spendingService.getTotalSpent();
   }
 
+  @GetMapping("/month")
+  public double getMonthlySpend(){
+    return spendingService.getCurrentMonthTotal();
+  }
+
+  @GetMapping("/prevMonth")
+  public double getPreviousMonthlySpend(){
+    return spendingService.getPreviousMonthTotal();
+  }
+
 }

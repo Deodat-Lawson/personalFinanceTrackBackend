@@ -1,11 +1,13 @@
 package com.example.financetracking.service;
 
 import com.example.financetracking.model.Income;
+import com.example.financetracking.model.Spending;
 import com.example.financetracking.repository.IncomeRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -37,10 +39,23 @@ public class IncomeService{
             .mapToDouble(Income::getAmount)
             .sum();
   }
+  public List<Income> getCurrentMonth() {
+    LocalDate now = LocalDate.now();
+    // First day of the current month
+    LocalDate startOfMonth = now.withDayOfMonth(1);
+    // First day of the next month (so it's exclusive)
+    LocalDate startOfNextMonth = startOfMonth.plusMonths(1);
 
-  public double getPreviousMonthTotal() {
-    LocalDate startOfPreviousMonth = LocalDate.now().minusMonths(1).withDayOfMonth(1);
-    LocalDate startOfCurrentMonth = LocalDate.now().withDayOfMonth(1);
+    return incomeRepository.findAll().stream()
+            .filter(income -> income.getDateReceived() != null
+                    && !income.getDateReceived().isBefore(startOfMonth)  // >= startOfMonth
+                    && income.getDateReceived().isBefore(startOfNextMonth)) // < startOfNextMonth
+            .collect(Collectors.toList());
+  }
+
+  public double getPreviousMonthTotal(int n) {
+    LocalDate startOfPreviousMonth = LocalDate.now().minusMonths(n).withDayOfMonth(1);
+    LocalDate startOfCurrentMonth = LocalDate.now().minusMonths(n-1).withDayOfMonth(1);
 
     return incomeRepository.findAll().stream()
             .filter(income -> income.getDateReceived() != null &&
@@ -49,6 +64,7 @@ public class IncomeService{
             .mapToDouble(Income::getAmount)
             .sum();
   }
+
 
 
 

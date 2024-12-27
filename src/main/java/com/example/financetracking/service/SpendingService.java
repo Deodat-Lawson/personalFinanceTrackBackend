@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SpendingService{
@@ -39,9 +40,23 @@ public class SpendingService{
             .sum();
   }
 
-  public double getPreviousMonthTotal() {
-    LocalDate startOfPreviousMonth = LocalDate.now().minusMonths(1).withDayOfMonth(1);
-    LocalDate startOfCurrentMonth = LocalDate.now().withDayOfMonth(1);
+
+  public List<Spending> getCurrentMonth() {
+    LocalDate now = LocalDate.now();
+    // First day of the current month
+    LocalDate startOfMonth = now.withDayOfMonth(1);
+    // First day of the next month (so it's exclusive)
+    LocalDate startOfNextMonth = startOfMonth.plusMonths(1);
+
+    return spendingRepository.findAll().stream()
+            .filter(spending -> spending.getDateSpent() != null
+                    && !spending.getDateSpent().isBefore(startOfMonth)  // >= startOfMonth
+                    && spending.getDateSpent().isBefore(startOfNextMonth)) // < startOfNextMonth
+            .collect(Collectors.toList());
+  }
+  public double getPreviousMonthTotal(int n) {
+    LocalDate startOfPreviousMonth = LocalDate.now().minusMonths(n).withDayOfMonth(1);
+    LocalDate startOfCurrentMonth = LocalDate.now().minusMonths(n-1).withDayOfMonth(1);
 
     return spendingRepository.findAll().stream()
             .filter(spending -> spending.getDateSpent() != null &&

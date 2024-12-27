@@ -8,7 +8,9 @@ get total spent: GET /api/spendings/total
  */
 
 import com.example.financetracking.model.Income;
+import com.example.financetracking.model.Spending;
 import com.example.financetracking.service.IncomeService;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -44,9 +46,17 @@ public class IncomeController {
   }
 
   @GetMapping("/prevMonth")
-  public double getPreviousMonthlyIncome(){
-    return incomeService.getPreviousMonthTotal();
+  public double getPreviousMonthlyIncome(int n){
+    return incomeService.getPreviousMonthTotal(n);
   }
+
+
+  @GetMapping("/month/detail")
+  public List<Income> getMonthlyIncomeDetail(){
+    return incomeService.getCurrentMonth();
+  }
+
+
 
 
 }
